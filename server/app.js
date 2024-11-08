@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
     }
 })
 
-app.get('/topics', async (req,res) => {
+app.get('/api/topics', async (req,res) => {
     try {
         const allTopics = await Topic.findAll()
         res.status(200).json(allTopics)
@@ -58,15 +58,16 @@ app.get('/topics', async (req,res) => {
 //     }
 // })
 
-app.get('topics/:id/flashcards', async (req,res) => {
+app.get('/api/topics/:id/flashcards', async (req,res) => {
     try {
-        const { topicId } = req.params
-        const allTopics = await Flashcard.findAll({where: {topic_id: topicId}})
+        const { id } = req.params;
+        const allFlashcards = await Flashcard.findAll({ where: { topic_id: id } });
+        res.status(200).json(allFlashcards);
     } catch (error) {
-        res.status(500).json({ message: error.message})
+        console.error(error);
+        res.status(500).json({ message: 'Произошла ошибка при получении карточек', error: error.message });
+    }
+});
 
-}
-})
-
-// запускаю прослушивание сервера на 3000 порту
+// прослушивание сервера на 3000 порту
 app.listen(PORT, () => console.log(`Server started at ${PORT} port`))
