@@ -1,39 +1,39 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import Topic from "./Topic.jsx";
+import Flashcard from "./Flashcard.jsx";
+import {useParams} from "react-router-dom";
+import flashcard from "./Flashcard.jsx";
 
-function Flashcard(props) {
+function FlashcardList(props) {
+    const { topicId } = useParams();
+    let [flashcards, setFlashcards] = useState([]);
+    const [status, setStatus] = useState(false);
 
-    let [currentAnswer, setAnswer] = useState('');
+    useEffect(() => {
+        loadFlashcards(topicId)
+    }, [status])
 
-    let changeAnswer = (e) => {
-        setAnswer(e.target.value);
+    async function loadFlashcards(topicId) {
+
+        const response = await fetch(`http://localhost:5173/api/topics/${topicId}/flashcards`);
+        const data = await response.json()
+        if (Array.isArray(data)) {
+            setFlashcards(data)
+        }
     }
 
-    let checkAnswer = () => {
-        let rightAnswer = props.answer;
-        if (rightAnswer === currentAnswer) {
-            alert('Ну мёёд! :)');
-            props.onSuccess(props.id);
-            return;
-        }
-
-        alert ('нееееее, подумой еще :(');
+    let success = (flashcardId) => {
+        flashcards = flashcards.filter(
+            (el) => el.id !== flashcardId
+        );
+        setFlashcards(flashcards);
     }
 
     return (
-        <div className="card" style={{width: "36rem"}}>
-            <img src={props.imgPath} className="card-img-top"/>
-            <div className="card-body">
-                <h5 className="card-title">Вопрос #{props.id}</h5>
-                <p className="card-text">{props.question}</p>
-            </div>
-            <ul className="list-group list-group-flush">
-                <li className="list-group-item"><input onChange={changeAnswer} className="form-control" placeholder="твой ответ"/></li>
-                <li className="list-group-item"><a onClick={checkAnswer} className="btn btn-primary">Ответить</a></li>
-                <li className="list-group-item"><a href="#" className="btn btn-secondary">Дальше</a></li>
-            </ul>
-
+        <div className="flashcardList">
+            {flashcards.map((el) => <Flashcard onSuccess={success} answer={el.answer} key={el.id} id={el.id} imgPath={el.img_path} question={el.question}/>)}
         </div>
     );
 }
 
-export default Flashcard;
+export default FlashcardList;

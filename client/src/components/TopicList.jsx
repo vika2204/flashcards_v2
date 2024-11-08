@@ -6,7 +6,7 @@ function TopicList(props) {
 
     useEffect(() => {
         loadTopics()
-    })
+    },[])
 
     async function loadTopics() {
         const response = await fetch('/api/topics');

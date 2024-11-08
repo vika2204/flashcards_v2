@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Topic(props) {
+    console.log(props)
     return (
         <div className="card" style={{width: "18rem"}}>
             <img src={props.imgPath} className="card-img-top"/>
