@@ -10,7 +10,7 @@ function Flashcard(props) {
 
     let checkAnswer = () => {
         let rightAnswer = props.answer;
-        if (rightAnswer === currentAnswer) {
+        if (rightAnswer.toLowerCase() === currentAnswer.toLowerCase()) {
             alert('Ну мёёд! :)');
             props.onSuccess(props.id);
             return;
